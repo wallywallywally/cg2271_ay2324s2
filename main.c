@@ -78,7 +78,6 @@ int main (void) {
 
 
 
-
 	// Start multi-threaded environment 
 //  osKernelInitialize();                 // Initialize CMSIS-RTOS
 //  osThreadNew(motor_control, NULL, NULL);    // Create motor_control thread

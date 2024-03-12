@@ -65,11 +65,13 @@ void backwards() {
 //	TPM0_C3V = 3000;   // Right: A2, B2
 }
 
-void left() {
+void left(int deg) {
+	// 3 angles of straight + left
+	// Small, medium, large
 	
 }
 
-void left_stationary() {
+void left_stationary(void) {
 	
 }
 
@@ -77,6 +79,6 @@ void right() {
 	
 }
 
-void right_stationary() {
+void right_stationary(void) {
 	
 }
