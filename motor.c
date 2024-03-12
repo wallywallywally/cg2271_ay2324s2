@@ -1,9 +1,7 @@
 #include "MKL25Z4.h"
 #include "motor.h"
 
-// PORTS
-#define TEST_MOTOR 3 // PortD Pin 1
-// TPM0 at PORTD - 6 channels 
+// PORTD - for TPM0 with 6 channels 
 #define PTD0_LEFT_FRONT 0
 #define PTD1_LEFT_BACK 1
 #define PTD2_RIGHT_FRONT 2
@@ -16,13 +14,6 @@ void initMotor(void) {
 	
 	// Enable clock for TPM0
 	SIM->SCGC6 |= SIM_SCGC6_TPM0_MASK;
-	
-	// Configure MUX settings to make all 3 pins GPIO
-//	PORTD->PCR[TEST_MOTOR] &= ~PORT_PCR_MUX_MASK;
-//	PORTD->PCR[TEST_MOTOR] |= PORT_PCR_MUX(1);
-	// Set Data Direction Registers for PortB and PortD
-//	PTD->PDDR |= MASK(TEST_MOTOR);
-	
 	
 	// MUX for TPM0_CH0-3
 	PORTD->PCR[PTD0_LEFT_FRONT] &= ~PORT_PCR_MUX_MASK;
@@ -58,4 +49,6 @@ void initMotor(void) {
 	TPM0_C3SC &= ~(TPM_CnSC_ELSB_MASK | TPM_CnSC_ELSA_MASK | TPM_CnSC_MSB_MASK | TPM_CnSC_MSA_MASK);
 	TPM0_C3SC |= (TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1));
 }
+
+// MOVEMENT
 
