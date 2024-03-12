@@ -4,15 +4,25 @@
 #include "cmsis_os2.h"
 
 
-#define PTE20_LEDPin 20
-#define PTE21_LEDPin 21
-#define PTE22_LEDPin 22
-#define PTE23_LEDPin 23
+//green
+#define PTE2_LEDPin 2
+#define PTE3_LEDPin 3
+#define PTE4_LEDPin 4
+#define PTE5_LEDPin 5
+#define PTB8_LEDPin 8
+#define PTB9_LEDPin 9
+#define PTB10_LEDPin 10
+#define PTB11_LEDPin 11 
 
-#define PTC3_LEDPin 3
+//red
 #define PTC4_LEDPin 4
 #define PTC5_LEDPin 5
-#define PTC6_LEDPin 6 
+#define PTC6_LEDPin 6
+#define PTC7_LEDPin 7
+#define PTC10_LEDPin 10
+#define PTC11_LEDPin 11
+#define PTC12_LEDPin 12
+#define PTC13_LEDPin 13 
 
 #define MASK(x) (1 << (x))
 
@@ -23,6 +33,7 @@
 
 void initLedPins(void);
 void offFrontLED(void);
+void offRearLED(void);
 void runningGREEN_Moving(uint8_t k);
 void solidGREEN_Stationery(void);
 void flashRED_Moving(void);
