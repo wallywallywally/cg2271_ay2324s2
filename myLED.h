@@ -1,3 +1,6 @@
+#ifndef LED_CONTROL
+#define LED_CONTROL
+
 #include "MKL25Z4.h"                    // Device header
 #include "RTE_Components.h"
 #include  CMSIS_device_header
@@ -40,3 +43,6 @@ void flashRED_Moving(void);
 void flashRED_Staionery(void);
 void tFrontLED(void);
 void tRearLED(void);
+
+
+#endif
