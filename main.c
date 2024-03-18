@@ -9,6 +9,7 @@
 #include "cmsis_os2.h"
 #include "MKL25Z4.h"
 #include "motor.h"
+#include "myLED.h"
 #include "serialComm.h"
  
  /*----------------------------------------------------------------------------
@@ -62,10 +63,27 @@ void motor_control_thread (void *argument) {
  * Application led thread
  * Control the LEDs
  *---------------------------------------------------------------------------*/
-void led_thread (void *argument) {
- 
-  // ...
-  for (;;) {}
+void led_front_thread(void *argument) {
+	for (;;) {
+		uint8_t ledIndex = 0;
+		if (isMoving) { 
+			runningGREEN_Moving(ledIndex);
+			ledIndex = (ledIndex + 1) % 8;
+		} else {
+			ledIndex = 0;
+			solidGREEN_Stationery();
+		}
+	}
+}
+
+void led_rear_thread(void *argument) {
+	for (;;) {
+		if (isMoving) {
+			flashRED_Moving();
+		} else {
+			flashRED_Staionery();
+		}	
+	}
 }
  
 /*----------------------------------------------------------------------------
@@ -89,8 +107,8 @@ int main (void) {
 	
 	// Initialise components
 	initMotor();
+	initLedPins();
 	initUART2();
-	
 	
 	// Testing normally
 	
@@ -110,6 +128,8 @@ int main (void) {
 	// Start multi-threaded environment 
 //  osKernelInitialize();                 // Initialize CMSIS-RTOS
 //  osThreadNew(motor_control, NULL, NULL);    // Create motor_control thread
+//  osThreadNew(led_front_thread, NULL, NULL); // Create led_front_thread
+//  osThreadNew(led_rear_thread, NULL, NULL);  // Create led_rear_thread
 //  osKernelStart();                      // Start thread execution
 	
   for (;;) {}
