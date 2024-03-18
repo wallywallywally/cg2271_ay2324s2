@@ -9,11 +9,37 @@
 #include "cmsis_os2.h"
 #include "MKL25Z4.h"
 #include "motor.h"
+#include "serialComm.h"
  
  /*----------------------------------------------------------------------------
- * Application brain thread
- * Decode the data from the Serial Port and perform the necessary action
+ * Serial communications
+ * 1. UART2 IRQ handler
+ * 2. Application brain thread
+ * 		Decode the data from the Serial Port and perform the necessary action
  *---------------------------------------------------------------------------*/
+ 
+ uint8_t rx_data = 0;
+ 
+ void UART2_IRQHandler(void) {
+	// Clear pending IRQs
+	NVIC_ClearPendingIRQ(UART2_IRQn);
+	
+	// RX ready
+	if (UART2->S1 & UART_S1_RDRF_MASK) {
+		rx_data = UART2->D;
+	}
+	
+	// Error
+	if (UART2->S1 & (UART_S1_OR_MASK | UART_S1_NF_MASK | UART_S1_FE_MASK | UART_S1_PF_MASK)) {
+		// Clear error flag by reading UART_D
+		uint8_t error_data = UART2->D;
+		
+		// Return error data
+		rx_data = error_data;
+	}
+	
+}
+ 
 void brain_thread (void *argument) {
  
   // ...
@@ -25,6 +51,8 @@ void brain_thread (void *argument) {
  * Control the action of the motors
  *---------------------------------------------------------------------------*/
 void motor_control_thread (void *argument) {
+	
+	// Read data, then execute appropriate command
  
   // ...
   for (;;) {}
@@ -61,6 +89,7 @@ int main (void) {
 	
 	// Initialise components
 	initMotor();
+	initUART2();
 	
 	
 	// Testing normally
