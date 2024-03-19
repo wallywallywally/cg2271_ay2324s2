@@ -20,6 +20,7 @@
  *---------------------------------------------------------------------------*/
  
  uint8_t rx_data = 0;
+
  
  void UART2_IRQHandler(void) {
 	// Clear pending IRQs
@@ -64,8 +65,8 @@ void motor_control_thread (void *argument) {
  * Control the LEDs
  *---------------------------------------------------------------------------*/
 void led_front_thread(void *argument) {
+	uint8_t ledIndex = 0;
 	for (;;) {
-		uint8_t ledIndex = 0;
 		if (isMoving) { 
 			runningGREEN_Moving(ledIndex);
 			ledIndex = (ledIndex + 1) % 8;
