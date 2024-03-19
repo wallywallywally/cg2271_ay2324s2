@@ -5,7 +5,9 @@
 #include "RTE_Components.h"
 #include  CMSIS_device_header
 #include "cmsis_os2.h"
-
+#include "RTE_Components.h"
+#include  CMSIS_device_header
+#include "cmsis_os2.h"
 
 //green
 #define PTE2_LEDPin 2
@@ -29,8 +31,8 @@
 
 #define MASK(x) (1 << (x))
 
-#define running_mode_delay_front 480000
-#define flash_moving_mode_delay_rear 4800000
+#define running_mode_delay_front 100
+#define flash_moving_mode_delay_rear 500
 #define flash_stationery_mode_delay_rear 250
 
 

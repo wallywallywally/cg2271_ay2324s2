@@ -1,6 +1,8 @@
 #include "MKL25Z4.h"                    // Device header
 #include "myLED.h"
-
+#include "RTE_Components.h"
+#include  CMSIS_device_header
+#include "cmsis_os2.h"
 
 
 
@@ -97,11 +99,11 @@ void offRearLED() {
 void runningGREEN_Moving(uint8_t k) {	
 	if (k < 4) {
 		PTE->PSOR |= MASK(green_led[k]);
-		delay(running_mode_delay_front);
+		osDelay(running_mode_delay_front);
 		PTE->PCOR |= MASK(green_led[k]);
 	} else {
 		PTB->PSOR |= MASK(green_led[k]);
-		delay(running_mode_delay_front);
+	  osDelay(running_mode_delay_front);
 		PTB->PCOR |= MASK(green_led[k]);
 	}
 }
@@ -112,17 +114,17 @@ void solidGREEN_Stationery() {
 }
 
 void flashRED_Moving() {
-		PTE->PSOR |= MASK(PTC7_LEDPin);
-		delay(flash_moving_mode_delay_rear);
-		PTE->PCOR |= MASK(PTC7_LEDPin);
-	  delay(flash_moving_mode_delay_rear);
+		PTC->PSOR |= MASK(PTC7_LEDPin);
+		osDelay(flash_moving_mode_delay_rear);
+		PTC->PCOR |= MASK(PTC7_LEDPin);
+	  osDelay(flash_moving_mode_delay_rear);
 }
 
 void flashRED_Staionery() {
-		PTE->PSOR |= MASK(PTC7_LEDPin);
-		delay(flash_stationery_mode_delay_rear);
-		PTE->PCOR |= MASK(PTC7_LEDPin);
-		delay(flash_stationery_mode_delay_rear);
+		PTC->PSOR |= MASK(PTC7_LEDPin);
+		osDelay(flash_stationery_mode_delay_rear);
+		PTC->PCOR |= MASK(PTC7_LEDPin);
+		osDelay(flash_stationery_mode_delay_rear);
 }
 
 
