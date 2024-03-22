@@ -28,9 +28,7 @@ osMessageQueueId_t rxDataQ, motorMsg, ledMsg, audioMsg;
  * 2. Application brain thread
  * 		Decode the data from the Serial Port and perform the necessary action
  *---------------------------------------------------------------------------*/
- 
- static volatile int rxD = 0;
- 
+  
  void UART2_IRQHandler(void) {
 	// Clear pending IRQs
 	NVIC_ClearPendingIRQ(UART2_IRQn);
@@ -119,10 +117,9 @@ void motor_control_thread (void *argument) {
  * Control the LEDs
  *---------------------------------------------------------------------------*/
 void led_front_thread(void *argument) {
-	
+	uint8_t ledIndex = 0;
 	
 	for (;;) {
-		uint8_t ledIndex = 0;
 		if (isMoving) { 
 			runningGREEN_Moving(ledIndex);
 			ledIndex = (ledIndex + 1) % 8;
