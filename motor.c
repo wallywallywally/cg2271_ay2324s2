@@ -5,7 +5,7 @@
 
 // PORTD - for TPM0 with 6 channels 
 #define PTD0_LEFT_FRONT 0
-#define PTD1_LEFT_BACK 1
+#define PTD1_LEFT_BACK 5
 #define PTD2_RIGHT_FRONT 2
 #define PTD3_RIGHT_BACK 3
 
@@ -47,8 +47,8 @@ void initMotor(void) {
 	// Enable PWM for TPM0_CH0-3
 	TPM0_C0SC &= ~(TPM_CnSC_ELSB_MASK | TPM_CnSC_ELSA_MASK | TPM_CnSC_MSB_MASK | TPM_CnSC_MSA_MASK);
 	TPM0_C0SC |= (TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1));
-	TPM0_C1SC &= ~(TPM_CnSC_ELSB_MASK | TPM_CnSC_ELSA_MASK | TPM_CnSC_MSB_MASK | TPM_CnSC_MSA_MASK);
-	TPM0_C1SC |= (TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1));
+	TPM0_C5SC &= ~(TPM_CnSC_ELSB_MASK | TPM_CnSC_ELSA_MASK | TPM_CnSC_MSB_MASK | TPM_CnSC_MSA_MASK);
+	TPM0_C5SC |= (TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1));
 	TPM0_C2SC &= ~(TPM_CnSC_ELSB_MASK | TPM_CnSC_ELSA_MASK | TPM_CnSC_MSB_MASK | TPM_CnSC_MSA_MASK);
 	TPM0_C2SC |= (TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1));
 	TPM0_C3SC &= ~(TPM_CnSC_ELSB_MASK | TPM_CnSC_ELSA_MASK | TPM_CnSC_MSB_MASK | TPM_CnSC_MSA_MASK);
@@ -58,7 +58,7 @@ void initMotor(void) {
 // MOVEMENT
 // Basic controls
 void leftSide_forwards(double percentage) {
-	TPM0_C1V = (uint32_t) (MOD_value * percentage / 100);		// A2, B2
+	TPM0_C5V = (uint32_t) (MOD_value * percentage / 100);		// A2, B2
 }
 
 void rightSide_forwards(double percentage) {
