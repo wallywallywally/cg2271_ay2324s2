@@ -11,6 +11,16 @@
 #include "motor.h"
 #include "myLED.h"
 #include "serialComm.h"
+
+#include "onboardLED.h"	// FOR TESTING RTOS SYNC
+
+/*----------------------------------------------------------------------------
+ * Global sync
+ *---------------------------------------------------------------------------*/
+
+static volatile int isMoving = 0;
+
+osMessageQueueId_t rxDataQ, motorMsg, ledMsg, audioMsg;
  
  /*----------------------------------------------------------------------------
  * Serial communications
@@ -19,7 +29,7 @@
  * 		Decode the data from the Serial Port and perform the necessary action
  *---------------------------------------------------------------------------*/
  
- uint8_t rx_data = 0;
+ static volatile int rxD = 0;
  
  void UART2_IRQHandler(void) {
 	// Clear pending IRQs
@@ -27,24 +37,60 @@
 	
 	// RX ready
 	if (UART2->S1 & UART_S1_RDRF_MASK) {
-		rx_data = UART2->D;
+		uint8_t rx_data = UART2->D;
+		osMessageQueuePut(rxDataQ, &rx_data, NULL, 0);
 	}
 	
 	// Error
 	if (UART2->S1 & (UART_S1_OR_MASK | UART_S1_NF_MASK | UART_S1_FE_MASK | UART_S1_PF_MASK)) {
 		// Clear error flag by reading UART_D
 		uint8_t error_data = UART2->D;
-		
-		// Return error data
-		rx_data = error_data;
 	}
 	
 }
  
 void brain_thread (void *argument) {
- 
-  // ...
-  for (;;) {}
+
+  for (;;) {
+		// Get data from rxDataQ
+		uint8_t rx_data;
+		osMessageQueueGet(rxDataQ, &rx_data, NULL, osWaitForever);
+	
+		// Process data
+		uint8_t motorData, ledData, audioData;
+		switch (rx_data) {
+			case 0x00:	// STOP - white
+				off_led();	
+				led_control(18, 0);
+				led_control(19, 0);
+				led_control(1, 0);
+				break;
+			case 0x10:	// FRONT - red
+				off_led();	
+				led_control(18, 0);
+				break;
+			case 0x20:	// BACK - green
+				off_led();	
+				led_control(19, 0);
+				break;
+			case 0x30:	// LEFT - blue
+				off_led();	
+				led_control(1, 0);
+				break;
+			case 0x40:	// RIGHT - yellow
+				off_led();	
+				led_control(18, 0);
+				led_control(19, 0);
+				break;
+			default:
+				off_led();
+		}
+		
+		// Send messages
+		osMessageQueuePut(motorMsg, &motorData, NULL, 0);
+//		osMessageQueuePut(ledMsg, &ledData, NULL, 0);
+//		osMessageQueuePut(audioMsg, &audioData, NULL, 0);
+	}
 }
  
 /*----------------------------------------------------------------------------
@@ -55,8 +101,17 @@ void motor_control_thread (void *argument) {
 	
 	// Read data, then execute appropriate command
  
-  // ...
-  for (;;) {}
+  for (;;) {
+		forwards();
+//		osDelay(2000);
+//		backwards();
+//		osDelay(2000);
+		
+		// Wait for messages
+//		uint8_t motorData;
+//		osMessageQueueGet(motorMsg, &motorData, NULL, osWaitForever);
+	
+	}
 }
  
  /*----------------------------------------------------------------------------
@@ -64,6 +119,8 @@ void motor_control_thread (void *argument) {
  * Control the LEDs
  *---------------------------------------------------------------------------*/
 void led_front_thread(void *argument) {
+	
+	
 	for (;;) {
 		uint8_t ledIndex = 0;
 		if (isMoving) { 
@@ -109,28 +166,22 @@ int main (void) {
 	initMotor();
 	initLedPins();
 	initUART2();
+	initGPIO(); // FOR TESTING RTOS SYNC
 	
-	// Testing normally
-	
-	// MOTORS
-	
-	// PWM for TPM0
-	// Forwards
-//	TPM0_C0V = 3750;   // Left: A2, B2
-//	TPM0_C2V = 1875;   // Right: A1, B1
-	
-	// Backwards
-//	TPM0_C1V = 6000;   // Left: A1, B1
-//	TPM0_C3V = 3000;   // Right: A2, B2
-
-
-
 	// Start multi-threaded environment 
-//  osKernelInitialize();                 // Initialize CMSIS-RTOS
-//  osThreadNew(motor_control, NULL, NULL);    // Create motor_control thread
+  osKernelInitialize();                 // Initialize CMSIS-RTOS
+		
+	// Message queues
+	rxDataQ = osMessageQueueNew(10, sizeof(uint8_t), NULL);
+	motorMsg = osMessageQueueNew(10, sizeof(uint8_t), NULL);
+	ledMsg = osMessageQueueNew(10, sizeof(uint8_t), NULL);
+	audioMsg = osMessageQueueNew(10, sizeof(uint8_t), NULL);
+	
+	osThreadNew(brain_thread, NULL, NULL);			// Brain
+  osThreadNew(motor_control_thread, NULL, NULL);    // Motors
 //  osThreadNew(led_front_thread, NULL, NULL); // Create led_front_thread
 //  osThreadNew(led_rear_thread, NULL, NULL);  // Create led_rear_thread
-//  osKernelStart();                      // Start thread execution
+  osKernelStart();                      // Start thread execution
 	
   for (;;) {}
 }

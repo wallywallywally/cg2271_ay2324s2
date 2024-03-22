@@ -61,47 +61,99 @@ void initMotor(void) {
 
 // Basic controls
 void leftSide_forwards(double percentage) {
-	TPM0_C0V = (uint32_t) (MOD_value * percentage);		// A2, B2
+	TPM0_C2V = (uint32_t) (MOD_value * percentage / 100);		// A2, B2
 }
 
 void rightSide_forwards(double percentage) {
-	TPM0_C2V = (uint32_t) (MOD_value * percentage);		// A1, B1
+	TPM0_C1V = (uint32_t) (MOD_value * percentage / 100);		// A1, B1
 }
 
 void leftSide_backwards(double percentage) {
-	TPM0_C1V = (uint32_t) (MOD_value * percentage);		// A1, B1
+	TPM0_C3V = (uint32_t) (MOD_value * percentage / 100);		// A1, B1
 }
 
 void rightSide_backwards(double percentage) {
-	TPM0_C3V = (uint32_t) (MOD_value * percentage);		// A2, B2
+	TPM0_C0V = (uint32_t) (MOD_value * percentage / 100);		// A2, B2
 }
 
-void forwards() {
+void stop(void) {
+	leftSide_forwards(0);
+	rightSide_forwards(0);
+	leftSide_backwards(0);
+	rightSide_backwards(0);
+}
+
+void forwards(void) {
 	leftSide_forwards(100);
 	rightSide_forwards(100);
+	leftSide_backwards(0);
+	rightSide_backwards(0);
 }
 
-void backwards() {
+void backwards(void) {
+	leftSide_forwards(0);
+	rightSide_forwards(0);
 	leftSide_backwards(100);
 	rightSide_backwards(100);
 }
 
-void left(int level) {
-	// 3 angles of straight + left
-	// Small, medium, large
-	
-}
-
 void left_stationary(void) {
+	leftSide_forwards(0);
 	rightSide_forwards(100);
 	leftSide_backwards(100);
-}
-
-void right(int level) {
-	
+	rightSide_backwards(0);
 }
 
 void right_stationary(void) {
 	leftSide_forwards(100);
+	rightSide_forwards(0);
+	leftSide_backwards(0);
 	rightSide_backwards(100);
 }
+
+void left_diag(int level) {
+	switch (level){
+		case (0):
+			// Small
+			leftSide_forwards(0);
+			rightSide_forwards(50);
+			leftSide_backwards(20);
+			rightSide_backwards(0);
+		case (1):
+			// Medium
+			leftSide_forwards(0);
+			rightSide_forwards(75);
+			leftSide_backwards(20);
+			rightSide_backwards(0);
+		case (2):
+			// Large
+			leftSide_forwards(0);
+			rightSide_forwards(100);
+			leftSide_backwards(20);
+			rightSide_backwards(0);
+	}
+}
+
+void right_diag(int level) {
+	switch (level){
+		case (0):
+			// Small
+			leftSide_forwards(50);
+			rightSide_forwards(0);
+			leftSide_backwards(0);
+			rightSide_backwards(20);
+		case (1):
+			// Medium
+			leftSide_forwards(75);
+			rightSide_forwards(0);
+			leftSide_backwards(0);
+			rightSide_backwards(20);
+		case (2):
+			// Large
+			leftSide_forwards(100);
+			rightSide_forwards(0);
+			leftSide_backwards(0);
+			rightSide_backwards(20);
+	}
+}
+

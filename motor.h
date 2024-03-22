@@ -9,11 +9,15 @@ void rightSide_forwards(double percentage);
 void leftSide_backwards(double percentage);
 void rightSide_backwards(double percentage);
 
+void stop(void);
 void forwards(void);
 void backwards(void);
-void left(int level);
 void left_stationary(void);
-void right(int level);
 void right_stationary(void);
+
+void left_diag(int level);
+void right_diag(int level);
+
+
 
 #endif
