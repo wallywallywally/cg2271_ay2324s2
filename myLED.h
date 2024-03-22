@@ -23,7 +23,7 @@
 //#define PTC4_LEDPin 4
 //#define PTC5_LEDPin 5
 //#define PTC6_LEDPin 6
-#define PTC7_LEDPin 7
+#define PTC12_LEDPin 12
 //#define PTC10_LEDPin 10
 //#define PTC11_LEDPin 11
 //#define PTC12_LEDPin 12

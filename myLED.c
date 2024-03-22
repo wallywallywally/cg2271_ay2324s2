@@ -60,8 +60,8 @@ void initLedPins(void)
 //	PORTC->PCR[PTC6_LEDPin] &= ~PORT_PCR_MUX_MASK;
 //	PORTC->PCR[PTC6_LEDPin] |= PORT_PCR_MUX(1);
 	
-	PORTC->PCR[PTC7_LEDPin] &= ~PORT_PCR_MUX_MASK;
-	PORTC->PCR[PTC7_LEDPin] |= PORT_PCR_MUX(1);
+	PORTC->PCR[PTC12_LEDPin] &= ~PORT_PCR_MUX_MASK;
+	PORTC->PCR[PTC12_LEDPin] |= PORT_PCR_MUX(1);
 	
 //	PORTC->PCR[PTC10_LEDPin] &= ~PORT_PCR_MUX_MASK;
 //	PORTC->PCR[PTC10_LEDPin] |= PORT_PCR_MUX(1);
@@ -82,7 +82,7 @@ void initLedPins(void)
 	// Set Data Direction Registers for various pins
 	PTE->PDDR |= (MASK(PTE2_LEDPin) | MASK(PTE3_LEDPin) | MASK(PTE4_LEDPin) | MASK(PTE5_LEDPin));
 	PTB->PDDR |= (MASK(PTB8_LEDPin) | MASK(PTB9_LEDPin) | MASK(PTB10_LEDPin) | MASK(PTB11_LEDPin));
-  PTC->PDDR |= MASK(PTC7_LEDPin);
+  PTC->PDDR |= MASK(PTC12_LEDPin);
 }
 
 
@@ -93,7 +93,7 @@ void offFrontLED() {
 }
 
 void offRearLED() {
-	PTC->PCOR |= MASK(PTC7_LEDPin);
+	PTC->PCOR |= MASK(PTC12_LEDPin);
 }
 
 void runningGREEN_Moving(uint8_t k) {	
@@ -114,16 +114,16 @@ void solidGREEN_Stationery() {
 }
 
 void flashRED_Moving() {
-		PTC->PSOR |= MASK(PTC7_LEDPin);
+		PTC->PSOR |= MASK(PTC12_LEDPin);
 		osDelay(flash_moving_mode_delay_rear);
-		PTC->PCOR |= MASK(PTC7_LEDPin);
+		PTC->PCOR |= MASK(PTC12_LEDPin);
 	  osDelay(flash_moving_mode_delay_rear);
 }
 
 void flashRED_Staionery() {
-		PTC->PSOR |= MASK(PTC7_LEDPin);
+		PTC->PSOR |= MASK(PTC12_LEDPin);
 		osDelay(flash_stationery_mode_delay_rear);
-		PTC->PCOR |= MASK(PTC7_LEDPin);
+		PTC->PCOR |= MASK(PTC12_LEDPin);
 		osDelay(flash_stationery_mode_delay_rear);
 }
 

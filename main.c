@@ -58,27 +58,19 @@ void brain_thread (void *argument) {
 		uint8_t motorData, ledData, audioData;
 		switch (rx_data) {
 			case 0x00:	// STOP - white
-				off_led();	
-				led_control(18, 0);
-				led_control(19, 0);
-				led_control(1, 0);
+				osMessageQueuePut(motorMs
 				break;
 			case 0x10:	// FRONT - red
-				off_led();	
-				led_control(18, 0);
+
 				break;
 			case 0x20:	// BACK - green
-				off_led();	
-				led_control(19, 0);
+
 				break;
 			case 0x30:	// LEFT - blue
-				off_led();	
-				led_control(1, 0);
+
 				break;
 			case 0x40:	// RIGHT - yellow
-				off_led();	
-				led_control(18, 0);
-				led_control(19, 0);
+
 				break;
 			default:
 				off_led();
@@ -99,15 +91,7 @@ void motor_control_thread (void *argument) {
 	
 	// Read data, then execute appropriate command
  
-  for (;;) {
-		forwards();
-//		osDelay(2000);
-//		backwards();
-//		osDelay(2000);
-		
-		// Wait for messages
-//		uint8_t motorData;
-//		osMessageQueueGet(motorMsg, &motorData, NULL, osWaitForever);
+
 	
 	}
 }
@@ -117,27 +101,16 @@ void motor_control_thread (void *argument) {
  * Control the LEDs
  *---------------------------------------------------------------------------*/
 void led_front_thread(void *argument) {
-	uint8_t ledIndex = 0;
+
 	
-	for (;;) {
-		if (isMoving) { 
-			runningGREEN_Moving(ledIndex);
-			ledIndex = (ledIndex + 1) % 8;
-		} else {
-			ledIndex = 0;
-			solidGREEN_Stationery();
-		}
-	}
+	uint8_t ledIndex = 0;
+
 }
 
 void led_rear_thread(void *argument) {
-	for (;;) {
-		if (isMoving) {
-			flashRED_Moving();
-		} else {
-			flashRED_Staionery();
-		}	
-	}
+
+	uint8_t rearled_data = 0;
+	
 }
  
 /*----------------------------------------------------------------------------
