@@ -14,7 +14,7 @@
 // 375k / 50 = 7500
 #define MOD_value 7500
 
-// METHODS
+// SETUP
 void initMotor(void) {
 	// Enable Clock to PORTD
 	SIM->SCGC5 |= SIM_SCGC5_PORTD_MASK;
@@ -56,24 +56,21 @@ void initMotor(void) {
 }
 
 // MOVEMENT
-
-// these are currently not timed -> need to figure out how long to run these for
-
 // Basic controls
 void leftSide_forwards(double percentage) {
-	TPM0_C2V = (uint32_t) (MOD_value * percentage / 100);		// A2, B2
+	TPM0_C1V = (uint32_t) (MOD_value * percentage / 100);		// A2, B2
 }
 
 void rightSide_forwards(double percentage) {
-	TPM0_C1V = (uint32_t) (MOD_value * percentage / 100);		// A1, B1
+	TPM0_C2V = (uint32_t) (MOD_value * percentage / 100);		// A1, B1
 }
 
 void leftSide_backwards(double percentage) {
-	TPM0_C3V = (uint32_t) (MOD_value * percentage / 100);		// A1, B1
+	TPM0_C0V = (uint32_t) (MOD_value * percentage / 100);		// A1, B1
 }
 
 void rightSide_backwards(double percentage) {
-	TPM0_C0V = (uint32_t) (MOD_value * percentage / 100);		// A2, B2
+	TPM0_C3V = (uint32_t) (MOD_value * percentage / 100);		// A2, B2
 }
 
 void stop(void) {
@@ -84,8 +81,8 @@ void stop(void) {
 }
 
 void forwards(void) {
-	leftSide_forwards(100);
-	rightSide_forwards(100);
+	leftSide_forwards(30);
+	rightSide_forwards(30);
 	leftSide_backwards(0);
 	rightSide_backwards(0);
 }
@@ -93,22 +90,22 @@ void forwards(void) {
 void backwards(void) {
 	leftSide_forwards(0);
 	rightSide_forwards(0);
-	leftSide_backwards(100);
-	rightSide_backwards(100);
+	leftSide_backwards(30);
+	rightSide_backwards(30);
 }
 
 void left_stationary(void) {
 	leftSide_forwards(0);
-	rightSide_forwards(100);
-	leftSide_backwards(100);
+	rightSide_forwards(30);
+	leftSide_backwards(30);
 	rightSide_backwards(0);
 }
 
 void right_stationary(void) {
-	leftSide_forwards(100);
+	leftSide_forwards(30);
 	rightSide_forwards(0);
 	leftSide_backwards(0);
-	rightSide_backwards(100);
+	rightSide_backwards(30);
 }
 
 void left_diag(int level) {
