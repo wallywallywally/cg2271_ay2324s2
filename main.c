@@ -18,8 +18,8 @@
  * Global sync
  *---------------------------------------------------------------------------*/
 
-static volatile int isMoving = 0;
 
+int x = 0;
 osMessageQueueId_t rxDataQ, motorMsg, ledFMsg, ledRMsg, audioMsg;
  
  /*----------------------------------------------------------------------------
@@ -56,47 +56,9 @@ void brain_thread (void *argument) {
 	
 		// Process and send data
 		osMessageQueuePut(motorMsg, &rx_data, NULL, 0);
-		
-		uint8_t ledData, audioData;
-		switch (rx_data) {
-		case 0x00:	// STOP
 		osMessageQueuePut(ledFMsg, &rx_data, NULL, 0);	
-		osMessageQueuePut(ledRMsg, &rx_data, NULL, 0);	
-			break;
-		case 0x10:	// FRONT
-		osMessageQueuePut(ledFMsg, &rx_data, NULL, 0);	
-		osMessageQueuePut(ledRMsg, &rx_data, NULL, 0);	
-			break;
-		case 0x20:	// BACK
-		osMessageQueuePut(ledFMsg, &rx_data, NULL, 0);	
-		osMessageQueuePut(ledRMsg, &rx_data, NULL, 0);	
-			break;
-		case 0x30:	// LEFT
-		osMessageQueuePut(ledFMsg, &rx_data, NULL, 0);	
-		osMessageQueuePut(ledRMsg, &rx_data, NULL, 0);	
-			break;
-		case 0x31:	// LEFT DIAG
-		osMessageQueuePut(ledFMsg, &rx_data, NULL, 0);	
-		osMessageQueuePut(ledRMsg, &rx_data, NULL, 0);	
-			break;
-		case 0x40:	// RIGHT
-		osMessageQueuePut(ledFMsg, &rx_data, NULL, 0);	
-		osMessageQueuePut(ledRMsg, &rx_data, NULL, 0);	
-			break;	
-		case 0x41:	// RIGHT DIAG
-		osMessageQueuePut(ledFMsg, &rx_data, NULL, 0);	
-		osMessageQueuePut(ledRMsg, &rx_data, NULL, 0);	
-			break;
-		case 0x50:	// END
-		osMessageQueuePut(ledFMsg, &rx_data, NULL, 0);	
-		osMessageQueuePut(ledRMsg, &rx_data, NULL, 0);	
-			break;
-		default:
-			stop();
-		}
-		
-//		osMessageQueuePut(ledMsg, &ledData, NULL, 0);
-//		osMessageQueuePut(audioMsg, &audioData, NULL, 0);
+		osMessageQueuePut(ledRMsg, &rx_data, NULL, 0);
+		osMessageQueuePut(audioMsg, &rx_data, NULL, 0);
 	}
 }
  
@@ -110,7 +72,7 @@ void motor_control_thread (void *argument) {
 		// Read data from motor queue
 		uint8_t motor_data;
 		osMessageQueueGet(motorMsg, &motor_data, NULL, osWaitForever);
-		
+		x++;
 		switch (motor_data) {
 		case 0x10:	// FRONT
 			forwards();
@@ -141,7 +103,6 @@ void motor_control_thread (void *argument) {
 //			TPM0_C2V = 0;
 //			TPM0_C3V = 0;
 		}
-		
 	}
 }
  
@@ -150,32 +111,35 @@ void motor_control_thread (void *argument) {
  * Control the LEDs
  *---------------------------------------------------------------------------*/
 void led_front_thread(void *argument) {
+
 	uint8_t ledIndex = 0;
+	uint8_t ledF_data = 0x00;
 	// Read data from led queue
-	uint8_t ledF_data;
 	for (;;) {
-		osMessageQueueGet(ledFMsg, &ledF_data, NULL, osWaitForever);
-		if (ledF_data) { 
+		osMessageQueueGet(ledFMsg, &ledF_data, NULL, 0);
+		if (ledF_data != 0x00) { 
+			offFrontLED();
 			runningGREEN_Moving(ledIndex);
 			ledIndex = (ledIndex + 1) % 8;
 		} else {
 			ledIndex = 0;
 			solidGREEN_Stationery();
 		}
+		
 	}
 }
 
 void led_rear_thread(void *argument) {
 	
+	uint8_t ledR_data = 0x00;
 	// Read data from led queue
-	uint8_t ledR_data;
 	for (;;) {
-		osMessageQueueGet(ledRMsg, &ledR_data, NULL, osWaitForever);
-		if (ledR_data) {
+		osMessageQueueGet(ledRMsg, &ledR_data, NULL, 0);
+		if (ledR_data != 0x00) {
 			flashRED_Moving();
 		} else {
 			flashRED_Staionery();
-		}	
+		}
 	}
 }
  
