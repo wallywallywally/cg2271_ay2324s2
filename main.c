@@ -21,7 +21,8 @@
  *---------------------------------------------------------------------------*/
 
 
-int x = 0;
+uint16_t x = 10000;
+uint16_t motor_thread_loop = 0;
 osMessageQueueId_t rxDataQ, motorMsg, ledFMsg, ledRMsg, audioMsg;
 osEventFlagsId_t mainMusicFlag, winMusicFlag;
  
@@ -56,8 +57,9 @@ osEventFlagsId_t mainMusicFlag, winMusicFlag;
 }
  
 void brain_thread (void *argument) {
-
-  for (;;) {
+	osEventFlagsSet(mainMusicFlag, 0x0001);
+	
+	for (;;) {
 		// Get data from rxDataQ
 		uint8_t rx_data;
 		osMessageQueueGet(rxDataQ, &rx_data, NULL, osWaitForever);
@@ -79,9 +81,10 @@ void motor_control_thread (void *argument) {
 		// Read data from motor queue
 		uint8_t motor_data;
 		osMessageQueueGet(motorMsg, &motor_data, NULL, osWaitForever);
-		x++;
+		motor_thread_loop++;
 		switch (motor_data) {
 		case 0x10:	// FRONT
+			x++;
 			forwards();
 			//TPM0_C0V = 3000;		// leftside back
 			break;
@@ -104,6 +107,7 @@ void motor_control_thread (void *argument) {
 			right_diag(0);
 			break;	
 		default:		// STOP - 0x00, 0x50
+			x--;
 			stop();
 //			TPM0_C0V = 0;
 //			TPM0_C1V = 0;
@@ -124,7 +128,7 @@ void led_front_thread(void *argument) {
 	// Read data from led queue
 	for (;;) {
 		osMessageQueueGet(ledFMsg, &ledF_data, NULL, 0);
-		if (ledF_data != 0x00) { 
+		if (ledF_data != 0x00 && ledF_data != 0x50) { 
 			offFrontLED();
 			runningGREEN_Moving(ledIndex);
 			ledIndex = (ledIndex + 1) % 8;
@@ -142,7 +146,7 @@ void led_rear_thread(void *argument) {
 	// Read data from led queue
 	for (;;) {
 		osMessageQueueGet(ledRMsg, &ledR_data, NULL, 0);
-		if (ledR_data != 0x00) {
+		if (ledR_data != 0x00 && ledR_data != 0x50) {
 			flashRED_Moving();
 		} else {
 			flashRED_Staionery();
