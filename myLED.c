@@ -8,7 +8,7 @@
 
 
 // LED starts blinking from PTE20 in line to PTE23	*************UPDATE THIS AFTER SOLDERING THE OTHER OTHER HEADER PINS ONTO KL25Z
-static  uint8_t green_led[8] = {PTE2_LEDPin, PTE3_LEDPin, PTE4_LEDPin, PTE5_LEDPin, PTB8_LEDPin, PTB9_LEDPin, PTB10_LEDPin, PTB11_LEDPin};
+static  uint8_t green_led[8] = {PTB8_LEDPin, PTB9_LEDPin, PTB10_LEDPin, PTB11_LEDPin, PTE2_LEDPin, PTE3_LEDPin, PTE4_LEDPin, PTE5_LEDPin};
 //static uint8_t red_led[8] = {PTC4_LEDPin, PTC5_LEDPin, PTC6_LEDPin, PTC7_LEDPin, PTC10_LEDPin, PTC11_LEDPin, PTC12_LEDPin, PTC13_LEDPin};
 
 static uint8_t ledIndex = 0;
@@ -98,13 +98,13 @@ void offRearLED() {
 
 void runningGREEN_Moving(uint8_t k) {	
 	if (k < 4) {
-		PTE->PSOR |= MASK(green_led[k]);
-		osDelay(running_mode_delay_front);
-		PTE->PCOR |= MASK(green_led[k]);
-	} else {
 		PTB->PSOR |= MASK(green_led[k]);
-	  osDelay(running_mode_delay_front);
+		osDelay(running_mode_delay_front);
 		PTB->PCOR |= MASK(green_led[k]);
+	} else {
+		PTE->PSOR |= MASK(green_led[k]);
+	  osDelay(running_mode_delay_front);
+		PTE->PCOR |= MASK(green_led[k]);
 	}
 }
 
