@@ -94,6 +94,7 @@ void backwards(void) {
 	rightSide_backwards(100);
 }
 
+// TODO: slow down
 void left_stationary(void) {
 	leftSide_forwards(0);
 	rightSide_forwards(65);
@@ -108,25 +109,26 @@ void right_stationary(void) {
 	rightSide_backwards(65);
 }
 
+// TODO: not turning enough
 void left_diag(int level) {
 	switch (level){
 		case (0):
 			// Small
-			leftSide_forwards(5);
-			rightSide_forwards(90);
+			leftSide_forwards(15);
+			rightSide_forwards(50);
 			leftSide_backwards(0);
 			rightSide_backwards(0);
 		case (1):
 			// Medium
-			leftSide_forwards(0);
+			leftSide_forwards(15);
 			rightSide_forwards(75);
-			leftSide_backwards(20);
+			leftSide_backwards(0);
 			rightSide_backwards(0);
 		case (2):
 			// Large
-			leftSide_forwards(0);
+			leftSide_forwards(15);
 			rightSide_forwards(100);
-			leftSide_backwards(20);
+			leftSide_backwards(0);
 			rightSide_backwards(0);
 	}
 }
@@ -135,22 +137,22 @@ void right_diag(int level) {
 	switch (level){
 		case (0):
 			// Small
-			leftSide_forwards(90);
-			rightSide_forwards(5);
+			leftSide_forwards(50);
+			rightSide_forwards(15);
 			leftSide_backwards(0);
 			rightSide_backwards(0);
 		case (1):
 			// Medium
 			leftSide_forwards(75);
-			rightSide_forwards(0);
+			rightSide_forwards(15);
 			leftSide_backwards(0);
-			rightSide_backwards(20);
+			rightSide_backwards(0);
 		case (2):
 			// Large
 			leftSide_forwards(100);
-			rightSide_forwards(0);
+			rightSide_forwards(15);
 			leftSide_backwards(0);
-			rightSide_backwards(20);
+			rightSide_backwards(0);
 	}
 }
 

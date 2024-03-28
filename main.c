@@ -86,33 +86,25 @@ void motor_control_thread (void *argument) {
 		case 0x10:	// FRONT
 			x++;
 			forwards();
-			//TPM0_C0V = 3000;		// leftside back
 			break;
 		case 0x20:	// BACK
 			backwards();
-			//TPM0_C1V = 3000;     // leftside front
 			break;
 		case 0x30:	// LEFT
 			left_stationary();
-			//TPM0_C2V = 3000;		// rightside front
 			break;
 		case 0x31:	// LEFT DIAG
-			left_diag(0);
+			left_diag(1);									// TODO
 			break;
 		case 0x40:	// RIGHT
 			right_stationary();
-			//TPM0_C3V = 3000;		// rightside back
 			break;	
 		case 0x41:	// RIGHT DIAG
-			right_diag(0);
+			right_diag(1);								// TODO
 			break;	
 		default:		// STOP - 0x00, 0x50
 			x--;
 			stop();
-//			TPM0_C0V = 0;
-//			TPM0_C1V = 0;
-//			TPM0_C2V = 0;
-//			TPM0_C3V = 0;
 		}
 	}
 }
@@ -206,12 +198,13 @@ int main (void) {
 	mainMusicFlag = osEventFlagsNew(NULL);
 	winMusicFlag = osEventFlagsNew(NULL);
 	
+	// Threads
 	osThreadNew(brain_thread, NULL, NULL);						// Brain
 	osThreadNew(motor_control_thread, NULL, NULL);    // Motors
-	osThreadNew(led_front_thread, NULL, NULL); // Create led_front_thread
-	osThreadNew(led_rear_thread, NULL, NULL);  // Create led_rear_thread
-	osThreadNew(main_music_thread, NULL, NULL); // Create main_music_thread
-	osThreadNew(win_music_thread, NULL, NULL); // Create win_music_thread
+	osThreadNew(led_front_thread, NULL, NULL); 				// Create led_front_thread
+	osThreadNew(led_rear_thread, NULL, NULL);  				// Create led_rear_thread
+	osThreadNew(main_music_thread, NULL, NULL); 			// Create main_music_thread
+	osThreadNew(win_music_thread, NULL, NULL); 				// Create win_music_thread
 	osKernelStart();                      						// Start thread execution
 	
   for (;;) {}
