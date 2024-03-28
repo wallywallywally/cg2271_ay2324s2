@@ -8,6 +8,8 @@
 #define UART_INT_PRIORITY 128
 #define BAUD_RATE 9600
 
+#define ESP_PTC13 13
+
 // METHODS
 void initUART2(void) {
 	uint32_t divisor, bus_clk;

@@ -18,7 +18,6 @@ void initGPIO(void)
 	SIM->SCGC5 |= ((SIM_SCGC5_PORTB_MASK) | (SIM_SCGC5_PORTD_MASK));
 	
 	// Configure MUX settings to make all 3 pins GPIO
-	
 	PORTB->PCR[RED_LED] &= ~PORT_PCR_MUX_MASK;
 	PORTB->PCR[RED_LED] |= PORT_PCR_MUX(1);
 	
