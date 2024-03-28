@@ -57,8 +57,9 @@ osEventFlagsId_t mainMusicFlag, winMusicFlag;
 }
  
 void brain_thread (void *argument) {
-
-  for (;;) {
+	osEventFlagsSet(mainMusicFlag, 0x0001);
+	
+	for (;;) {
 		// Get data from rxDataQ
 		uint8_t rx_data;
 		osMessageQueueGet(rxDataQ, &rx_data, NULL, osWaitForever);

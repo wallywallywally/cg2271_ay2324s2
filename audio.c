@@ -95,6 +95,9 @@ void initAudio(void) {
 	// Set Modulo Value 20971520 / 128 = 163840 / 3276 = 50 Hz
 	//TPM->MOD = 3276;
 	
+	// Set C0V value to off the buzzer
+	TPM1_C0V = 0;
+	
 	// Set Modulo Value 48000000 / 128 = 375000 / 7500 = 50 Hz
 	TPM1->MOD = 7500;
 	

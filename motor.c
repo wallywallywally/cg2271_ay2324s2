@@ -96,24 +96,24 @@ void backwards(void) {
 
 void left_stationary(void) {
 	leftSide_forwards(0);
-	rightSide_forwards(80);
-	leftSide_backwards(80);
+	rightSide_forwards(65);
+	leftSide_backwards(65);
 	rightSide_backwards(0);
 }
 
 void right_stationary(void) {
-	leftSide_forwards(80);
+	leftSide_forwards(65);
 	rightSide_forwards(0);
 	leftSide_backwards(0);
-	rightSide_backwards(80);
+	rightSide_backwards(65);
 }
 
 void left_diag(int level) {
 	switch (level){
 		case (0):
 			// Small
-			leftSide_forwards(10);
-			rightSide_forwards(70);
+			leftSide_forwards(5);
+			rightSide_forwards(90);
 			leftSide_backwards(0);
 			rightSide_backwards(0);
 		case (1):
@@ -135,8 +135,8 @@ void right_diag(int level) {
 	switch (level){
 		case (0):
 			// Small
-			leftSide_forwards(70);
-			rightSide_forwards(10);
+			leftSide_forwards(90);
+			rightSide_forwards(5);
 			leftSide_backwards(0);
 			rightSide_backwards(0);
 		case (1):
