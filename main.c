@@ -11,6 +11,8 @@
 #include "motor.h"
 #include "myLED.h"
 #include "serialComm.h"
+#include "audio.h"
+#define MAIN_MUSIC_LEN 362
 
 #include "onboardLED.h"	// FOR TESTING RTOS SYNC
 
@@ -21,6 +23,7 @@
 
 int x = 0;
 osMessageQueueId_t rxDataQ, motorMsg, ledFMsg, ledRMsg, audioMsg;
+osEventFlagsId_t mainMusicFlag, winMusicFlag;
  
  /*----------------------------------------------------------------------------
  * Serial communications
@@ -37,6 +40,11 @@ osMessageQueueId_t rxDataQ, motorMsg, ledFMsg, ledRMsg, audioMsg;
 	if (UART2->S1 & UART_S1_RDRF_MASK) {
 		uint8_t rx_data = UART2->D;
 		osMessageQueuePut(rxDataQ, &rx_data, NULL, 0);
+		// Set flags for win music
+		if (rx_data == 0x50) {
+			osEventFlagsClear(mainMusicFlag, 0x0001);
+			osEventFlagsSet(winMusicFlag, 0x0001);
+		}
 	}
 	
 	// Error
@@ -58,7 +66,6 @@ void brain_thread (void *argument) {
 		osMessageQueuePut(motorMsg, &rx_data, NULL, 0);
 		osMessageQueuePut(ledFMsg, &rx_data, NULL, 0);	
 		osMessageQueuePut(ledRMsg, &rx_data, NULL, 0);
-		osMessageQueuePut(audioMsg, &rx_data, NULL, 0);
 	}
 }
  
@@ -147,16 +154,22 @@ void led_rear_thread(void *argument) {
  * Application audio thread
  * Provide audio output
  *---------------------------------------------------------------------------*/
-void audio_thread (void *argument) {
- 
-  // Run from start
-	// ... CONTINUOUS SONG TUNE
-	
-  for (;;) {
-		// Stop once we finish the course
-		uint8_t rx_data;
-		osMessageQueueGet(audioMsg, &rx_data, NULL, osWaitForever);
-		// ... UNIQUE TONE
+
+void main_music_thread(void *argument) {
+	for (;;) {
+		for (int i = 0; i < MAIN_MUSIC_LEN; i++) {
+			osEventFlagsWait(mainMusicFlag, 0x0001, osFlagsNoClear, osWaitForever);
+			TPM1_C0V = (main_song[i] > 0) ? 10 : 0;
+			TPM1->MOD = main_song[i];
+			osDelay(main_delay[i]);
+		}
+	}
+}
+
+void win_music_thread(void *argument) {
+	for (;;) {
+		osEventFlagsWait(winMusicFlag, 0x0001, osFlagsWaitAny, osWaitForever);
+		winMusic();
 	}
 }
 
@@ -173,24 +186,29 @@ int main (void) {
 	initMotor();
 	initLedPins();
 	initUART2();
+	initAudio();
 	//initGPIO(); // FOR TESTING RTOS SYNC
 	
 	// Start multi-threaded environment 	
-  osKernelInitialize();                 						// Initialize CMSIS-RTOS
+	osKernelInitialize();                 						// Initialize CMSIS-RTOS
 		
 	// Message queues
 	rxDataQ = osMessageQueueNew(10, sizeof(uint8_t), NULL);
 	motorMsg = osMessageQueueNew(10, sizeof(uint8_t), NULL);
 	ledFMsg = osMessageQueueNew(10, sizeof(uint8_t), NULL);
 	ledRMsg = osMessageQueueNew(10, sizeof(uint8_t), NULL);
-	audioMsg = osMessageQueueNew(10, sizeof(uint8_t), NULL);
+	
+	// Event flags
+	mainMusicFlag = osEventFlagsNew(NULL);
+	winMusicFlag = osEventFlagsNew(NULL);
 	
 	osThreadNew(brain_thread, NULL, NULL);						// Brain
-  osThreadNew(motor_control_thread, NULL, NULL);    // Motors
-  osThreadNew(led_front_thread, NULL, NULL); // Create led_front_thread
-  osThreadNew(led_rear_thread, NULL, NULL);  // Create led_rear_thread
-//	osThreadNew(audio_thread, NULL, NULL);
-  osKernelStart();                      						// Start thread execution
+	osThreadNew(motor_control_thread, NULL, NULL);    // Motors
+	osThreadNew(led_front_thread, NULL, NULL); // Create led_front_thread
+	osThreadNew(led_rear_thread, NULL, NULL);  // Create led_rear_thread
+	osThreadNew(main_music_thread, NULL, NULL); // Create main_music_thread
+	osThreadNew(win_music_thread, NULL, NULL); // Create win_music_thread
+	osKernelStart();                      						// Start thread execution
 	
   for (;;) {}
 }
