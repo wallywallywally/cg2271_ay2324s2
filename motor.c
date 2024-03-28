@@ -74,15 +74,15 @@ void rightSide_backwards(double percentage) {
 }
 
 void stop(void) {
-	leftSide_forwards(0);
-	rightSide_forwards(0);
-	leftSide_backwards(0);
-	rightSide_backwards(0);
+	leftSide_forwards(50);
+	rightSide_forwards(50);
+	leftSide_backwards(50);
+	rightSide_backwards(50);
 }
 
 void forwards(void) {
-	leftSide_forwards(30);
-	rightSide_forwards(30);
+	leftSide_forwards(100);
+	rightSide_forwards(100);
 	leftSide_backwards(0);
 	rightSide_backwards(0);
 }
@@ -90,31 +90,31 @@ void forwards(void) {
 void backwards(void) {
 	leftSide_forwards(0);
 	rightSide_forwards(0);
-	leftSide_backwards(30);
-	rightSide_backwards(30);
+	leftSide_backwards(100);
+	rightSide_backwards(100);
 }
 
 void left_stationary(void) {
 	leftSide_forwards(0);
-	rightSide_forwards(30);
-	leftSide_backwards(30);
+	rightSide_forwards(80);
+	leftSide_backwards(80);
 	rightSide_backwards(0);
 }
 
 void right_stationary(void) {
-	leftSide_forwards(30);
+	leftSide_forwards(80);
 	rightSide_forwards(0);
 	leftSide_backwards(0);
-	rightSide_backwards(30);
+	rightSide_backwards(80);
 }
 
 void left_diag(int level) {
 	switch (level){
 		case (0):
 			// Small
-			leftSide_forwards(0);
-			rightSide_forwards(50);
-			leftSide_backwards(20);
+			leftSide_forwards(10);
+			rightSide_forwards(70);
+			leftSide_backwards(0);
 			rightSide_backwards(0);
 		case (1):
 			// Medium
@@ -135,10 +135,10 @@ void right_diag(int level) {
 	switch (level){
 		case (0):
 			// Small
-			leftSide_forwards(50);
-			rightSide_forwards(0);
+			leftSide_forwards(70);
+			rightSide_forwards(10);
 			leftSide_backwards(0);
-			rightSide_backwards(20);
+			rightSide_backwards(0);
 		case (1):
 			// Medium
 			leftSide_forwards(75);
