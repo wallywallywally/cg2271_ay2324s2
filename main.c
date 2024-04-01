@@ -94,13 +94,13 @@ void motor_control_thread (void *argument) {
 			left_stationary();
 			break;
 		case 0x31:	// LEFT DIAG
-			left_diag(1);									// TODO
+			left_diag();
 			break;
 		case 0x40:	// RIGHT
 			right_stationary();
 			break;	
 		case 0x41:	// RIGHT DIAG
-			right_diag(1);								// TODO
+			right_diag();
 			break;	
 		default:		// STOP - 0x00, 0x50
 			x--;

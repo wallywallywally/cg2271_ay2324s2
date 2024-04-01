@@ -15,8 +15,8 @@ void backwards(void);
 void left_stationary(void);
 void right_stationary(void);
 
-void left_diag(int level);
-void right_diag(int level);
+void left_diag(void);
+void right_diag(void);
 
 
 
