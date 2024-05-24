@@ -12,7 +12,7 @@ Our robot uses the Keil RTX5 (based on CMSIS-RTOS2) on a FRDM-KL25Z running on t
 
 Its objective is to complete a course as fast as possible, whilst being able to blink LEDs and play music. As shown above, we used a controller to pilot our robot.
 
-In `main.c`, multiple threads corresponding to these various tasks are used. UART was used to receive signals from the controller. Within our code, we used Message Queues and Event flags to communicate and synchronise between threads.
+Commands are sent from our controller to an ESP32, which then sends data over UART to the KL25Z. In `main.c`, received data is parsed and relevant  threads corresponding to different tasks are executed. Within our code, we used Message Queues and Event flags to communicate and synchronise between threads.
 
 # Contributors
 
